@@ -34,7 +34,7 @@ export class HomeComponent implements OnInit {
       this.countInterval = 0;
       this.getAlbums(this.artistId);
     } else {
-      if (this.countInterval < 120) {
+      if (this.countInterval < 240) {
         setTimeout(() => { this.waitForToken(); }, 500);
       } else {
         console.log('no connection');
