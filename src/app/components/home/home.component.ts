@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {ArtistAlbumsData} from '@shared/models/artist-albums-data.inteface';
 import {HttpService} from '@shared/services/http.service';
 import {AlbumData, AlbumsData} from '@shared/models/album-data.inteface';
@@ -10,39 +10,48 @@ import {DropDownData} from '@shared/models/dropdown.interface';
   styleUrls: ['./home.component.scss']
 })
 
-export class HomeComponent implements OnInit{
+export class HomeComponent implements OnInit, OnChanges {
   data: AlbumsData;
   selectedAlbum: AlbumData;
   artistId: string;
   dropDownOptions: DropDownData;
   optSelected: string;
   payload: any;
+  checkme: boolean;
 
   constructor(private httpService: HttpService) {
     this.artistId = '0du5cEVh5yTK9QJze8zA0C';
-    this.httpService.getToken().subscribe((data) => {
-      this.getAlbums(this.artistId, data);
-    });
+    this.checkme = httpService.appReady;
   }
 
   ngOnInit() {
+    this.getAlbums(this.artistId);
   }
 
-  getAlbums(artistId: string, payload) {
+  ngOnChanges(changes: SimpleChanges) {
+    if (this.checkme) {
+      this.payload = localStorage.getItem('spotifyToken');
+      this.getAlbums(this.artistId);
+    }
+  }
+
+  getAlbums(artistId: string) {
     // call api to get albums
-    console.log(payload);
-/*    this.httpService.getAlbumListByArtistId(artistId, payload).subscribe((data: ArtistAlbumsData) => {
+    this.payload = localStorage.getItem('spotifyToken');
+    console.log(localStorage.getItem('spotifyToken'));
+    this.httpService.getAlbumListByArtistId(artistId, this.payload).subscribe((data: ArtistAlbumsData) => {
         if (data.items) {
           // arrange data for dropdown and for album selection
           this.data = data.items.map(({id, name, images, release_date}) => ({id, name, images, release_date}));
           this.dropDownOptions = data.items.map(({id, name}) => ({val: id, txt: name}));
+          console.log(this.dropDownOptions);
           // call function that check's for the last album displayed
           this.loadLastAlbum();
         }
       },
       err => {
         console.log('err:::', err);
-      });*/
+      });
   }
 
   // activated when the dropdown component selection was made.

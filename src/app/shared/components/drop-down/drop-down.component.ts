@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {DropDownData} from '@shared/models/dropdown.interface';
 
 @Component({
@@ -6,20 +6,19 @@ import {DropDownData} from '@shared/models/dropdown.interface';
   templateUrl: './drop-down.component.html',
   styleUrls: ['./drop-down.component.scss']
 })
-export class DropDownComponent implements OnInit {
+export class DropDownComponent{
   // get the options from the component that was calling the dropdown
   @Input() dropDownOptions: DropDownData;
   // represent the selected option
   @Input() optSelected?: string;
   // the output EventEmitter
   @Output() dropDownChange = new EventEmitter();
-  constructor() {}
-
-  ngOnInit() {
+  constructor() {
     if (!this.optSelected) {
       this.optSelected = '';
     }
   }
+
   // emit the changes to component that was calling the dropdown
   returnVal(val) {
     this.dropDownChange.emit(val);
