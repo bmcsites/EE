@@ -1,4 +1,4 @@
-import {Component, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ArtistAlbumsData} from '@shared/models/artist-albums-data.inteface';
 import {HttpService} from '@shared/services/http.service';
 import {AlbumData, AlbumsData} from '@shared/models/album-data.inteface';
@@ -10,41 +10,46 @@ import {DropDownData} from '@shared/models/dropdown.interface';
   styleUrls: ['./home.component.scss']
 })
 
-export class HomeComponent implements OnInit, OnChanges {
+export class HomeComponent implements OnInit {
   data: AlbumsData;
   selectedAlbum: AlbumData;
   artistId: string;
   dropDownOptions: DropDownData;
   optSelected: string;
   payload: any;
-  checkme: boolean;
+  countInterval: number;
 
   constructor(private httpService: HttpService) {
     this.artistId = '0du5cEVh5yTK9QJze8zA0C';
-    this.checkme = httpService.appReady;
+    this.countInterval = 0;
   }
 
   ngOnInit() {
-    this.getAlbums(this.artistId);
+    this.waitForToken();
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (this.checkme) {
-      this.payload = localStorage.getItem('spotifyToken');
+  waitForToken() {
+    this.countInterval++;
+    if (localStorage.getItem('spotifyToken')) {
+      this.countInterval = 0;
       this.getAlbums(this.artistId);
+    } else {
+      if (this.countInterval < 120) {
+        setTimeout(() => { this.waitForToken(); }, 500);
+      } else {
+        console.log('no connection');
+      }
     }
   }
 
   getAlbums(artistId: string) {
     // call api to get albums
     this.payload = localStorage.getItem('spotifyToken');
-    console.log(localStorage.getItem('spotifyToken'));
     this.httpService.getAlbumListByArtistId(artistId, this.payload).subscribe((data: ArtistAlbumsData) => {
         if (data.items) {
           // arrange data for dropdown and for album selection
           this.data = data.items.map(({id, name, images, release_date}) => ({id, name, images, release_date}));
           this.dropDownOptions = data.items.map(({id, name}) => ({val: id, txt: name}));
-          console.log(this.dropDownOptions);
           // call function that check's for the last album displayed
           this.loadLastAlbum();
         }
