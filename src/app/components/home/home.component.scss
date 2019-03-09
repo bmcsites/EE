@@ -1,0 +1,10 @@
+.drop-down-box {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  height: 10vh;
+  app-drop-down  {
+    margin: 0 auto;
+  }
+}

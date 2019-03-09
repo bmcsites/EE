@@ -1,0 +1,5 @@
+<app-se-header></app-se-header>
+<div class="drop-down-box">
+  <app-drop-down (dropDownChange)="dropDownChanges($event)" [dropDownOptions]="dropDownOptions" [optSelected]="optSelected"></app-drop-down>
+</div>
+<app-show-album [selectedAlbum]="selectedAlbum"></app-show-album>

@@ -1,0 +1,9 @@
+<div class="album-box" *ngIf="selectedAlbum">
+  <h1>{{ selectedAlbum.name}}</h1>
+  <h1>{{ selectedAlbum.release_date}}</h1>
+  <img
+    [src]="selectedAlbum.images[0].url"
+    data-src="{{ selectedAlbum.images[0].url }}"
+    data-srcset="{{ selectedAlbum.images[1].url }} 480w, {{ selectedAlbum.images[0].url }} 640w, {{ selectedAlbum.images[0].url }} 1024w"
+  />
+</div>
