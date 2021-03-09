@@ -15,12 +15,13 @@ export class HttpService {
     const token = window.location.hash.substr(1).split('&')[0].split('=')[1];
     if (token) {
       localStorage.setItem('spotifyToken', token);
+      // @ts-ignore
       popup.close();
     }
   }
 
   // ready the query to send with the Authorization headers.
-  getQuery(query: string, payload) {
+  getQuery(query: string, payload: any) {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${payload}`
     });
@@ -28,7 +29,7 @@ export class HttpService {
   }
 
   // get the list of albums by artist id limit by 50.
-  getAlbumListByArtistId(artistId: string, payload) {
+  getAlbumListByArtistId(artistId: string, payload: any) {
     return this.getQuery(`artists/${artistId}/albums?market=ES&limit=50`, payload);
   }
 }

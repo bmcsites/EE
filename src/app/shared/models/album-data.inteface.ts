@@ -5,7 +5,7 @@ export interface AlbumsData {
     name: string;
     release_date: string;
   };
-  find(param: (album) => boolean): any;
+  find(param: (album: any) => boolean): any;
 }
 
 export interface AlbumData {

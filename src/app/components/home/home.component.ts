@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {ArtistAlbumsData} from '@shared/models/artist-albums-data.inteface';
-import {HttpService} from '@shared/services/http.service';
-import {AlbumData, AlbumsData} from '@shared/models/album-data.inteface';
-import {DropDownData} from '@shared/models/dropdown.interface';
+import {AlbumData, AlbumsData} from '../../shared/models/album-data.inteface';
+import {DropDownData} from '../../shared/models/dropdown.interface';
+import {HttpService} from '../../shared/services/http.service';
+import {ArtistAlbumsData} from '../../shared/models/artist-albums-data.inteface';
 
 @Component({
   selector: 'app-home',
@@ -21,7 +21,7 @@ export class HomeComponent implements OnInit {
 
   constructor(private httpService: HttpService) {
     this.artistId = '0du5cEVh5yTK9QJze8zA0C';
-    this.countInterval = 0;
+    this.countInterval = 1;
   }
 
   ngOnInit() {
@@ -29,16 +29,21 @@ export class HomeComponent implements OnInit {
   }
 
   waitForToken() {
-    this.countInterval++;
-    if (localStorage.getItem('spotifyToken')) {
-      this.countInterval = 0;
-      this.getAlbums(this.artistId);
-    } else {
-      if (this.countInterval < 240) {
-        setTimeout(() => { this.waitForToken(); }, 500);
+    if (this.countInterval) {
+      this.countInterval++;
+      if (localStorage.getItem('spotifyToken')) {
+        console.log()
+        this.countInterval = 0;
+        this.getAlbums(this.artistId);
       } else {
-        console.log('no connection');
+        if (this.countInterval < 240) {
+          setTimeout(() => { this.waitForToken(); }, 500);
+        } else {
+          console.log('no connection');
+        }
       }
+    } else {
+      console.log('something is wrong');
     }
   }
 
@@ -60,15 +65,15 @@ export class HomeComponent implements OnInit {
   }
 
   // activated when the dropdown component selection was made.
-  dropDownChanges(e) {
+  dropDownChanges(e: string | null) {
     // validate data that come from the dropdown
-    if (e && e !== '') {
+    if (e && e !== '' && this.data) {
       // find the album by id from the album list and bind it to the show-album component.
       this.selectedAlbum = this.data.find(album => album.id === e);
       // save album id in the localStorage.
       localStorage.setItem('albumId', e);
     } else {
-      this.selectedAlbum = null;
+      this.selectedAlbum = undefined;
     }
   }
 

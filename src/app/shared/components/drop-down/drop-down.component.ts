@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {DropDownData} from '@shared/models/dropdown.interface';
+import {DropDownData, DropDownDataItem} from '../../models/dropdown.interface';
 
 @Component({
   selector: 'app-drop-down',
@@ -8,7 +8,16 @@ import {DropDownData} from '@shared/models/dropdown.interface';
 })
 export class DropDownComponent{
   // get the options from the component that was calling the dropdown
-  @Input() dropDownOptions: DropDownData;
+  _dropDownOptions: DropDownDataItem[];
+
+  @Input() set dropDownOptions(change: any) {
+    this._dropDownOptions = change;
+  }
+
+  get dropDownOptions() {
+    return this._dropDownOptions;
+  }
+
   // represent the selected option
   @Input() optSelected?: string;
   // the output EventEmitter
@@ -20,7 +29,7 @@ export class DropDownComponent{
   }
 
   // emit the changes to component that was calling the dropdown
-  returnVal(val) {
+  returnVal(val: any) {
     this.dropDownChange.emit(val);
   }
 }
